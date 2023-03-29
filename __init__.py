@@ -90,30 +90,31 @@ def fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device
 
         #予測フェーズ
         net.eval()
+        with torch.no_grad()
 
-        for inputs_test, labels_test in test_loader:
-            # 1バッチあたりのデータ件数
-            test_batch_size = len(labels_test)
-            # 1エポックあたりのデータ累積件数
-            n_test += test_batch_size
+          for inputs_test, labels_test in test_loader:
+              # 1バッチあたりのデータ件数
+              test_batch_size = len(labels_test)
+              # 1エポックあたりのデータ累積件数
+              n_test += test_batch_size
 
-            # GPUヘ転送
-            inputs_test = inputs_test.to(device)
-            labels_test = labels_test.to(device)
+              # GPUヘ転送
+              inputs_test = inputs_test.to(device)
+              labels_test = labels_test.to(device)
 
-            # 予測計算
-            outputs_test = net(inputs_test)
+              # 予測計算
+              outputs_test = net(inputs_test)
 
-            # 損失計算
-            loss_test = criterion(outputs_test, labels_test)
- 
-            # 予測ラベル導出
-            predicted_test = torch.max(outputs_test, 1)[1]
+              # 損失計算
+              loss_test = criterion(outputs_test, labels_test)
 
-            #  平均前の損失と正解数の計算
-            # lossは平均計算が行われているので平均前の損失に戻して加算
-            val_loss +=  loss_test.item() * test_batch_size
-            n_val_acc +=  (predicted_test == labels_test).sum().item()
+              # 予測ラベル導出
+              predicted_test = torch.max(outputs_test, 1)[1]
+
+              #  平均前の損失と正解数の計算
+              # lossは平均計算が行われているので平均前の損失に戻して加算
+              val_loss +=  loss_test.item() * test_batch_size
+              n_val_acc +=  (predicted_test == labels_test).sum().item()
     
         # 精度計算
         train_acc = n_train_acc / n_train
