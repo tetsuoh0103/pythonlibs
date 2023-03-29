@@ -90,7 +90,7 @@ def fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device
 
         #予測フェーズ
         net.eval()
-        with torch.no_grad()
+        with torch.no_grad():
 
           for inputs_test, labels_test in test_loader:
               # 1バッチあたりのデータ件数
